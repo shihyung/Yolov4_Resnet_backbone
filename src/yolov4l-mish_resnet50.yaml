@@ -1,0 +1,60 @@
+# parameters
+nc: 80  # number of classes
+depth_multiple: 1.0  # model depth multiple
+width_multiple: 1.0  # layer channel multiple
+
+# anchors
+anchors:
+  - [12,16, 19,36, 40,28]  # P3/8
+  - [36,75, 76,55, 72,146]  # P4/16
+  - [142,110, 192,243, 459,401]  # P5/32
+
+# yolov4s backbone
+backbone:
+  # [from, number, module, args]
+  [[-1, 1, nn.Conv2d, [64, 7, 2, 3]],        # 0
+   [-1, 1, nn.BatchNorm2d, [None]],          # 1
+   [-1, 1, nn.ReLU, [True]],                 # 2
+   [-1, 1, nn.MaxPool2d, [3, 2, 1]],         # 3
+   [-1, 3, resLayer, [64, 1, 1, 64, True]],  # 4
+   [-1, 4, resLayer, [128, 2, 1, 64, True]], # 5
+   [-1, 6, resLayer, [256, 2, 1, 64, True]], # 6
+   [-1, 3, resLayer, [512, 2, 1, 64, True]], # 7
+  ]
+
+# yolov4s head
+# na = len(anchors[0])
+head:
+  [[-1, 1, SPPCSP, [512]],                      # 8
+   [-1, 1, Conv, [256, 1, 1]],                  # 9
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],  # 10
+   [6, 1, Conv, [256, 1, 1]],                   # 11
+   [[-1, -2], 1, Concat, [1]],                  # 12
+   [-1, 2, BottleneckCSP2, [256]],              # 13
+   [-1, 1, Conv, [128, 1, 1]],                  # 14
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],  # 15
+   [5, 1, Conv, [128, 1, 1]],                   # 16
+   [[-1, -2], 1, Concat, [1]],                  # 17
+   [-1, 2, BottleneckCSP2, [128]],              # 18
+   [-1, 1, Conv, [256, 3, 1]],                  # 19
+   [-2, 1, Conv, [256, 3, 2]],                  # 20
+   [[-1, 13], 1, Concat, [1]],                  # 21
+   [-1, 2, BottleneckCSP2, [256]],              # 22
+   [-1, 1, Conv, [512, 3, 1]],                  # 23
+   [-2, 1, Conv, [512, 3, 2]],                  # 24
+   [[-1, 8], 1, Concat, [1]],                   # 25
+   [-1, 2, BottleneckCSP2, [512]],              # 26
+   [-1, 1, Conv, [1024, 3, 1]],                 # 27
+
+   [[19,23,27], 1, Detect, [nc, anchors]],   # Detect(P3, P4, P5)
+  ]
+
+
+
+# resnet50       [3, 4, 6, 3],  groups = 1,  width_per_group = 64
+# resnet101      [3, 4, 23, 3], groups = 1,  width_per_group = 64
+# resnet152      [3, 8, 36, 3], groups = 1,  width_per_group = 64
+# resnext50      [3, 4, 6, 3],  groups = 32, width_per_group = 4
+# resnext101     [3, 4, 23, 3], groups = 32, width_per_group = 8
+# wide_resnet50  [3, 4, 6, 3],  groups = 1,  width_per_group = 128
+# wide_resnet101 [3, 4, 23, 3], groups = 1,  width_per_group = 128
