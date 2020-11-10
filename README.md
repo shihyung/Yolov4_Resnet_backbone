@@ -10,9 +10,11 @@ Yolov4:
 ## yaml 檔修改
 ##### 原始的 Yolov4_L yaml 檔案的 backbone
 ![images/2_yolo_yaml.png](images/2_yolo_yaml.png)
-##### 修改後的 Yolov4_L_resnet yaml。 number 表示幾個 blocks; args 則包含 channel output, stride, groups, width per group, downsaple or not。
+##### 修改後的 Yolov4_L_resnet18 yaml  
 ![images/2_yolo_yaml_resnet18.png](images/2_yolo_yaml_resnet18.png)
+##### 修改後的 Yolov4_L_resnet34 yaml  
 ![images/2_yolo_yaml_resnet34.png](images/2_yolo_yaml_resnet34.png)
+##### 修改後的 Yolov4_L_resnet50 yaml  
 ![images/2_yolo_yaml_resnet50.png](images/2_yolo_yaml_resnet50.png)
 ***
 ## 程式修改
